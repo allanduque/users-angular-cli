@@ -97,7 +97,7 @@ export class UserComponent implements OnInit {
     this.form.reset()
   }
   AtualizarUsuario(){
-    this.title = 'blur entrou!'
+    this.title = this.form.get('nome')?.value;
   }
 
   AlterarModo(modo: string){

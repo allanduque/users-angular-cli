@@ -23,7 +23,7 @@
       <div class="form-group">
         <label for="inputAddress"><h2 class="text-center">Nome *</h2></label>
         <input type="text" formControlName="nome" class="form-control" id="inputAddress" placeholder="Digite seu nome"
-        (blur)="AlterarUsuario()"
+        (blur)="AtualizarUsuario()"
         [ngClass]="{'input-error': !form.get('nome')?.pristine && form.get('nome')?.errors}">
       </div>
       <div class="form-group">
