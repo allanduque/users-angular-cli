@@ -1,46 +1,63 @@
-<form>
-  <div class="form-row">
-    <div class="form-group col-md-6">
-      <label for="inputEmail4">Email</label>
-      <input type="email" class="form-control" id="inputEmail4" placeholder="Email">
+<h1 class="title">{{title}}</h1>
+
+<table *ngIf="modo=='listar'">
+  <tr>
+    <th>Nome Completo</th>
+    <th>Email</th>
+    <th>Data de Nascimento</th>
+    <th>Escolaridade</th>
+    <th>Excluir</th>
+  </tr>
+  <tr *ngFor="let user of Users">
+    <td>{{user.Nome}} {{user.Sobrenome}}</td>
+    <td>{{user.Email}}</td>
+    <td>{{user.DataNascimento}}</td>
+    <td>{{user.Escolaridade}}</td>
+    <td><button type="submit" class="btn btn-primary" (click)="RemoverUsuario(user)"><h1>&times;</h1></button></td>
+  </tr>
+</table>
+
+<div id="modal" *ngIf="modo=='adicionar'">
+    <form [formGroup]="form">
+    <div class="form-row">
+      <div class="form-group">
+        <label for="inputAddress"><h2 class="text-center">Nome *</h2></label>
+        <input type="text" formControlName="nome" class="form-control" id="inputAddress" placeholder="Digite seu nome"
+        (blur)="AlterarUsuario()"
+        [ngClass]="{'input-error': !form.get('nome')?.pristine && form.get('nome')?.errors}">
+      </div>
+      <div class="form-group">
+        <label for="inputAddress"><h2 class="text-center">Sobrenome *</h2></label>
+        <input type="text" formControlName="sobrenome" class="form-control" id="inputAddress" placeholder="Digite seu sobrenome"
+        [ngClass]="{'input-error': !form.get('sobrenome')?.pristine && form.get('sobrenome')?.errors}">
+      </div>
     </div>
     <div class="form-group col-md-6">
-      <label for="inputPassword4">Senha</label>
-      <input type="password" class="form-control" id="inputPassword4" placeholder="Senha">
+      <label for="inputEmail4"><h2 class="text-center">Email *</h2></label>
+      <input type="email" formControlName="email" class="form-control" id="inputEmail4" placeholder="Digite seu Email"
+      [ngClass]="{'input-error': !form.get('email')?.pristine && form.get('email')?.errors}">
     </div>
-  </div>
-  <div class="form-group">
-    <label for="inputAddress">Endereço</label>
-    <input type="text" class="form-control" id="inputAddress" placeholder="Rua dos Bobos, nº 0">
-  </div>
-  <div class="form-group">
-    <label for="inputAddress2">Endereço 2</label>
-    <input type="text" class="form-control" id="inputAddress2" placeholder="Apartamento, hotel, casa, etc.">
-  </div>
-  <div class="form-row">
-    <div class="form-group col-md-6">
-      <label for="inputCity">Cidade</label>
-      <input type="text" class="form-control" id="inputCity">
+    <div class="form-group">
+      <label for="inputAddress"><h2 class="text-center">Data de Nascimento *</h2></label>
+      <input type="text" maxlength="10" mask="00/00/0000" formControlName="dataNascimento" mask="00/00/0000" class="form-control" placeholder="dd/MM/yyyy" id="inputAddress"
+      [ngClass]="{'input-error': !form.get('dataNascimento')?.pristine && form.get('dataNascimento')?.invalid}" (change)="validaData(form.get('dataNascimento')?.value)">
     </div>
-    <div class="form-group col-md-4">
-      <label for="inputEstado">Estado</label>
-      <select id="inputEstado" class="form-control">
-        <option selected>Escolher...</option>
-        <option>...</option>
+    <div class="form-group">
+      <label><h2 class="text-center">Escolaridade *</h2></label>
+      <select formControlName="escolaridade" class="custom-select" [ngClass]="{'input-error': !form.get('escolaridade')?.pristine && form.get('escolaridade')?.value == 0}">
+        <option value="0" disable selected>Selecione</option>
+        <option value="1"  selected>Infantil</option>
+        <option value="2"  selected>Fundamental</option>
+        <option value="3"  selected>Médio</option>
+        <option value="4"  selected>Superior</option>
       </select>
     </div>
-    <div class="form-group col-md-2">
-      <label for="inputCEP">CEP</label>
-      <input type="text" class="form-control" id="inputCEP">
-    </div>
-  </div>
-  <div class="form-group">
-    <div class="form-check">
-      <input class="form-check-input" type="checkbox" id="gridCheck">
-      <label class="form-check-label" for="gridCheck">
-        Clique em mim
-      </label>
-    </div>
-  </div>
-  <button type="submit" class="btn btn-primary">Entrar</button>
-</form>
+    <br>
+    <button type="submit" class="btn btn-primary buttonCadastrar" (click)="CadastrarUsuario()" [disabled]="form.invalid">Cadastrar</button>
+    
+    <button class=" add-button buttonCancelar" (click)="AlterarModo('listar')" *ngIf="modo=='adicionar'">&crarr;</button>
+  </form>
+</div>
+<br>
+
+<button class=" add-button button" (click)="AlterarModo('adicionar')" *ngIf="modo=='listar'">Casdatrar novo Usuário</button>

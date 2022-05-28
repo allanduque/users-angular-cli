@@ -1,9 +1,9 @@
-export interface User {
-    id: number;
-    Nome: string;
-    Sobrenome: string;
-    Email: string;
-    DataNascimento: Date;
-    Escolaridade: number;
+export class User {
+    constructor(    public Id: number,
+    public Nome: string,
+    public Sobrenome: string,
+    public Email: string,
+    public DataNascimento: string,
+    public Escolaridade: number) {
+    }
   }
-  
