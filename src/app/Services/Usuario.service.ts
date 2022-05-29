@@ -33,4 +33,9 @@ constructor(private http:HttpClient) {
     return this.http.post(`${environment.BaseUrl}/Usuario/CadastrarUsuario`, user);
   }
 
+  public DeletarUsuario(id: number): Observable<any>{
+    console.log('delete:')
+    console.log(id)
+    return this.http.delete(`${environment.BaseUrl}/Usuario/DeletarUsuarioPorId?Id=`+id);
+  }
 }

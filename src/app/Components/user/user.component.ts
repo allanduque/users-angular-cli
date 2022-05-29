@@ -68,23 +68,29 @@ export class UserComponent implements OnInit {
   CadastrarUsuario(){
     let usuarioCadastrado = new User(this.Users.length+1,this.form.get('nome')?.value, this.form.get('sobrenome')?.value, this.form.get('email')?.value, this.AdicionarMascaraData(this.form.get('dataNascimento')?.value), this.form.get('escolaridade')?.value);
     
-    this.usuarioService.CadastrarUsuario(usuarioCadastrado).subscribe(() =>
+    this.usuarioService.CadastrarUsuario(usuarioCadastrado).subscribe((users) =>
     {
-      alert('Cadstrado com sucesso!');
+      alert('Cadastrado com sucesso!');
     },
     () => {
       alert('Erro ao cadastrar!');
     });
-    
-    this.BuscarUsuariosCadastrados();
     this.AlterarModo('listar');
     this.limpar();
+    this.BuscarUsuariosCadastrados();
   }
 
   RemoverUsuario(user: User){
     const index = this.Users.indexOf(user);
     if(index !== -1){
       if(confirm("Deseja remover o usuário "+ user.nome)) {
+        this.usuarioService.DeletarUsuario(user.id).subscribe(() =>
+        {
+          alert('Removido com sucesso!');
+        },
+        () => {
+          alert('Erro ao remover!');
+        });
         this.Users.splice(index, 1);
       }
     }    
