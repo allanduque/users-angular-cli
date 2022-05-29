@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { User } from 'src/app/models/User';
+import { UsuarioService } from 'src/app/Services/Usuario.service';
 
 @Component({
   selector: 'app-user',
@@ -14,7 +15,7 @@ export class UserComponent implements OnInit {
   public title: string ='Cadastro de Usuários';
   public form!: FormGroup;
 
-  constructor(private fb: FormBuilder) {
+  constructor(private fb: FormBuilder, private usuarioService: UsuarioService) {
     this.Validacoes();
   }
   
@@ -45,24 +46,48 @@ export class UserComponent implements OnInit {
   }
   
   ngOnInit() {
-    this.Users = this.BuscarUsuarios();
-    this.Users.push(new User(3,'Pedro', 'Henrique', 'teste3@teste.com', '01/01/2000', 6))
+    this.BuscarUsuariosCadastrados();
+  }
+
+  BuscarUsuariosCadastrados(){
+    this.usuarioService.BuscarUsuarios().subscribe({
+      next: (event) => {
+        this.Users = event as User[];
+      },
+      error: (err) => {
+        console.log(err);
+      }
+    })
+    console.log('Usuarios buscados!')
+  }
+  AdicionarMascaraData(data: string): string{
+    let dt = data.substr(4,4) + '-' + data.substr(2,2) +'-'+ data.substr(0,2) 
+    return dt
   }
 
   CadastrarUsuario(){
-    this.Users.push(new User(this.Users.length+1,this.form.get('nome')?.value, this.form.get('sobrenome')?.value, this.form.get('email')?.value, this.form.get('dataNascimento')?.value, this.form.get('escolaridade')?.value))
+    let usuarioCadastrado = new User(this.Users.length+1,this.form.get('nome')?.value, this.form.get('sobrenome')?.value, this.form.get('email')?.value, this.AdicionarMascaraData(this.form.get('dataNascimento')?.value), this.form.get('escolaridade')?.value);
+    
+    this.usuarioService.CadastrarUsuario(usuarioCadastrado).subscribe(() =>
+    {
+      alert('Cadstrado com sucesso!');
+    },
+    () => {
+      alert('Erro ao cadastrar!');
+    });
+    
+    this.BuscarUsuariosCadastrados();
+    this.AlterarModo('listar');
     this.limpar();
-    this.AlterarModo('listar')
   }
 
   RemoverUsuario(user: User){
     const index = this.Users.indexOf(user);
     if(index !== -1){
-      if(confirm("Deseja remover o usuário "+ user.Nome)) {
+      if(confirm("Deseja remover o usuário "+ user.nome)) {
         this.Users.splice(index, 1);
       }
-    }
-    
+    }    
   }
 
   validaData(input: FormControl){
@@ -70,9 +95,9 @@ export class UserComponent implements OnInit {
     if(input.value=='' || input.value?.length < 8) return { obrigatoriedade: true}
 
     // Checks for dd/mm/yyyy format.
-    var dtDay: number = +input.value.substr(0, 2);;
-    var dtMonth: number = +input.value.substr(2, 2);;
-    var dtYear: number = +input.value.substr(4, 4);;
+    var dtDay: number = +input.value?.substr(0, 2);
+    var dtMonth: number = +input.value?.substr(2, 2);
+    var dtYear: number = +input.value?.substr(4, 4);
 
     if (dtMonth < 1 || dtMonth > 12)
         return { obrigatoriedade: true};
@@ -97,29 +122,11 @@ export class UserComponent implements OnInit {
     this.form.reset()
   }
   AtualizarUsuario(){
-    this.title = this.form.get('nome')?.value;
+    
   }
 
   AlterarModo(modo: string){
     this.modo = modo;
-  }
-
-  BuscarUsuarios(): User[] {
-    return [
-      { Id:1,
-        Nome:'Allan',
-        Sobrenome:'Duque',
-        Email:'teste@teste.com',
-        DataNascimento: '12/21/1996',
-        Escolaridade:10},
-
-        { Id:2,
-          Nome:'Daniel',
-          Sobrenome:'Lucas',
-          Email:'teste2@teste.com',
-          DataNascimento: '06/02/2004',
-          Escolaridade:9}
-]
   }
 
 }

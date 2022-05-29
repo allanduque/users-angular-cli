@@ -1,9 +1,9 @@
 export class User {
-    constructor(    public Id: number,
-    public Nome: string,
-    public Sobrenome: string,
-    public Email: string,
-    public DataNascimento: string,
-    public Escolaridade: number) {
+    constructor(    public id: number,
+    public nome: string,
+    public sobrenome: string,
+    public email: string,
+    public dataNascimento: string,
+    public escolaridade: number) {
     }
   }
